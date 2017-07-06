@@ -175,9 +175,9 @@ if test -z "$ldsocoremode"; then
 else
   CCOPT="-Wl,-bnoentry -Wl,-bE:$expfile -Wl,-bhalt:4"
 fi
-CCOPT="$CCOPT -Wl,-bM:SRE -Wl,-T512 -Wl,-H512 -Wl,-brtl -Wl,-bnortllib -lm -o $objfile"
+CCOPT="$CCOPT -Wl,-bM:SRE -Wl,-T512 -Wl,-H512 -Wl,-brtl -Wl,-bnortllib -o $objfile"
 
-CCARGS="$args"
+CCARGS="$args -lm"
 
 # Export list generation.
 #echo $makexp $expfile "$objfile" $objs

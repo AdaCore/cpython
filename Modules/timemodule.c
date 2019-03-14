@@ -1566,6 +1566,9 @@ init_timezone(PyObject *m)
     tzset();
     PyModule_AddIntConstant(m, "timezone", _Py_timezone);
 #ifdef HAVE_ALTZONE
+#if defined(__sun__)
+    extern long altzone;
+#endif
     PyModule_AddIntConstant(m, "altzone", altzone);
 #else
     PyModule_AddIntConstant(m, "altzone", _Py_timezone-3600);

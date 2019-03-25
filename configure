@@ -8194,8 +8194,8 @@ then
 	IRIX*/6*) LDSHARED="ld ${SGI_ABI} -shared -all";;
 	SunOS/5*)
 		if test "$GCC" = "yes" ; then
-			LDSHARED='$(CC) -shared'
-			LDCXXSHARED='$(CXX) -shared'
+			LDSHARED='$(CC) -static-libgcc -shared'
+			LDCXXSHARED='$(CXX) -static-libgcc -shared'
 		else
 			LDSHARED='$(CC) -G'
 			LDCXXSHARED='$(CXX) -G'
@@ -8424,6 +8424,12 @@ then
 		LINKFORSHARED='-Wl,-E -N 2048K';;
 	esac
 fi
+
+case $ac_sys_system in
+   Darwin*) ;;
+         *) LINKFORSHARED="$LINKFORSHARED -static-libgcc";;
+esac
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LINKFORSHARED" >&5
 $as_echo "$LINKFORSHARED" >&6; }
 
@@ -8555,6 +8561,51 @@ _ACEOF
 
 fi
 	# Dynamic linking for HP-UX
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for fdatasync in -lposix4" >&5
+$as_echo_n "checking for fdatasync in -lposix4... " >&6; }
+if ${ac_cv_lib_posix4_fdatasync+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lposix4  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char fdatasync ();
+int
+main ()
+{
+return fdatasync ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_posix4_fdatasync=yes
+else
+  ac_cv_lib_posix4_fdatasync=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_posix4_fdatasync" >&5
+$as_echo "$ac_cv_lib_posix4_fdatasync" >&6; }
+if test "x$ac_cv_lib_posix4_fdatasync" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPOSIX4 1
+_ACEOF
+
+  LIBS="-lposix4 $LIBS"
+
+fi
+ # Dynamic linking for SunOS/Solaris
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for RAND_egd in -lcrypto" >&5
 $as_echo_n "checking for RAND_egd in -lcrypto... " >&6; }
 if ${ac_cv_lib_crypto_RAND_egd+:} false; then :

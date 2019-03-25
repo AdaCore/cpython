@@ -1960,8 +1960,8 @@ then
 	IRIX*/6*) LDSHARED="ld ${SGI_ABI} -shared -all";;
 	SunOS/5*) 
 		if test "$GCC" = "yes" ; then
-			LDSHARED='$(CC) -shared'
-			LDCXXSHARED='$(CXX) -shared'
+			LDSHARED='$(CC) -static-libgcc -shared'
+			LDCXXSHARED='$(CXX) -static-libgcc -shared'
 		else
 			LDSHARED='$(CC) -G'
 			LDCXXSHARED='$(CXX) -G'
@@ -2186,6 +2186,12 @@ then
 		LINKFORSHARED='-Wl,-E -N 2048K';;
 	esac
 fi
+
+case $ac_sys_system in
+   Darwin*) ;;
+         *) LINKFORSHARED="$LINKFORSHARED -static-libgcc";;
+esac
+  
 AC_MSG_RESULT($LINKFORSHARED)
 
 
@@ -2224,6 +2230,7 @@ AC_MSG_RESULT($SHLIBS)
 # checks for libraries
 AC_CHECK_LIB(dl, dlopen)	# Dynamic linking for SunOS/Solaris and SYSV
 AC_CHECK_LIB(dld, shl_load)	# Dynamic linking for HP-UX
+AC_CHECK_LIB(posix4, fdatasync) # Dynamic linking for SunOS/Solaris
 AC_CHECK_LIB(crypto, RAND_egd,
              AC_DEFINE(HAVE_RAND_EGD, 1,
              [Define if the libcrypto has RAND_egd]))

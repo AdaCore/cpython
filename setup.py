@@ -862,6 +862,8 @@ class PyBuildExt(build_ext):
         have_usable_openssl = (have_any_openssl and
                                openssl_ver >= min_openssl_ver)
 
+        have_any_openssl = True
+        have_usable_openssl = True
         if have_any_openssl:
             if have_usable_openssl:
                 # The _hashlib module wraps optimized implementations
@@ -869,7 +871,7 @@ class PyBuildExt(build_ext):
                 exts.append( Extension('_hashlib', ['_hashopenssl.c'],
                                        include_dirs = ssl_incs,
                                        library_dirs = ssl_libs,
-                                       libraries = ['ssl', 'crypto']) )
+                                       libraries = ['crypto']) )
             else:
                 print ("warning: openssl 0x%08x is too old for _hashlib" %
                        openssl_ver)
@@ -1117,7 +1119,8 @@ class PyBuildExt(build_ext):
         # We hunt for #define SQLITE_VERSION "n.n.n"
         # We need to find >= sqlite version 3.0.8
         sqlite_incdir = sqlite_libdir = None
-        sqlite_inc_paths = [ '/usr/include',
+        sqlite_inc_paths = [ os.environ.get('WITH_SQLITE_DIR', '/foo') + '/include',
+                             '/usr/include',
                              '/usr/include/sqlite',
                              '/usr/include/sqlite3',
                              '/usr/local/include',
@@ -1136,7 +1139,7 @@ class PyBuildExt(build_ext):
         if host_platform == 'darwin':
             sysroot = macosx_sdk_root()
 
-        for d_ in inc_dirs + sqlite_inc_paths:
+        for d_ in sqlite_inc_paths:
             d = d_
             if host_platform == 'darwin' and is_macosx_sdk_path(d):
                 d = os.path.join(sysroot, d[1:])

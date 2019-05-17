@@ -1344,6 +1344,26 @@ _PyTime_GetThreadTimeWithInfo(_PyTime_t *tp, _Py_clock_info_t *info)
     return 0;
 }
 
+/* Patch from https://bugs.python.org/file47984/thread_time.diff */
+#elif defined(__sun) && defined(__SVR4)
+#define HAVE_THREAD_TIME
+static int
+_PyTime_GetThreadTimeWithInfo(_PyTime_t *tp, _Py_clock_info_t *info)
+{
+    _PyTime_t t;
+
+    if (info) {
+        info->implementation = "gethrvtime()";
+        info->resolution = 1e-9;
+        info->monotonic = 1;
+        info->adjustable = 0;
+    }
+
+    t = _PyTime_FromNanoseconds(gethrvtime());
+    *tp = t;
+    return 0;
+}
+
 #elif defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_PROCESS_CPUTIME_ID)
 #define HAVE_THREAD_TIME
 static int

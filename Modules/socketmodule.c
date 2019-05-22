@@ -5412,6 +5412,11 @@ socket_sethostname(PyObject *self, PyObject *args)
 extern int sethostname(const char *, size_t);
 #endif
 
+#if (defined(__sun) && defined(__SVR4))
+/* issue #34288 */
+extern int sethostname(const char *, size_t);
+#endif
+
     if (!PyArg_ParseTuple(args, "S:sethostname", &hnobj)) {
         PyErr_Clear();
         if (!PyArg_ParseTuple(args, "O&:sethostname",

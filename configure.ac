@@ -2538,8 +2538,8 @@ then
 		;;
 	SunOS/5*)
 		if test "$GCC" = "yes" ; then
-			LDSHARED='$(CC) -shared'
-			LDCXXSHARED='$(CXX) -shared'
+			LDSHARED='$(CC) -static-libgcc -shared'
+			LDCXXSHARED='$(CXX) -static-libgcc -shared'
 		else
 			LDSHARED='$(CC) -G'
 			LDCXXSHARED='$(CXX) -G'
